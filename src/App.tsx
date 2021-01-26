@@ -1,24 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+
+import React from "react";
+import { getFibonacciNumber } from "./helpers/getFibonacciNumber";
+import { getMultipliers } from "./helpers/getMultipliers";
+import { InputBlock } from "./components/InputBlock";
+import { useFibonacci } from "./hooks/useFibonacci";
+import { useMultipliers } from "./hooks/useMultipliers";
+import { useFactorial } from "./hooks/useFactorial";
+import { IWorkerData } from "./hooks/useWebWorker";
+import { WorkerInputBlock } from "./components/WorkerInputBlock";
+import { getFactorial } from "./helpers/getFactorial";
+
+export interface IInputs {
+  text: string;
+  fn: (arg: number) => number | string;
+  useWorker: () => IWorkerData;
+}
+
+const inputs = [
+  { text: "Числа Фибоначчи", fn: getFibonacciNumber, useWorker: useFibonacci },
+  { text: "Факториал", fn: getFactorial, useWorker: useFactorial },
+  {
+    text: "Разложение на множители",
+    fn: getMultipliers,
+    useWorker: useMultipliers,
+  },
+];
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+        <div className="wrapper">
+          <h1 className="title">Без воркеров</h1>
+          {inputs.map(({useWorker, ...props}, i) => (
+            <InputBlock {...props} key={i} />
+          ))}
+        </div>
+        <div className="wrapper">
+          <h1 className="title">С воркерами</h1>
+          {inputs.map(({fn, ...props}, i) => (
+            <WorkerInputBlock {...props} key={i} />
+          ))}
+        </div>
     </div>
   );
 }
